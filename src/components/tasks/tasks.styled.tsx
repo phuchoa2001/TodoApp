@@ -7,9 +7,10 @@ import { Alarm, RadioButtonChecked, RadioButtonUnchecked } from "@mui/icons-mate
 
 interface TaskComponentProps {
   backgroundColor: string;
-  done: boolean;
+  done?: boolean;
   glow?: boolean;
   blur?: boolean;
+  onClick?: () => void;
 }
 
 export const TaskContainer = styled.div<TaskComponentProps>`
