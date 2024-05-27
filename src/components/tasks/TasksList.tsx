@@ -69,6 +69,7 @@ import { useTheme } from "@emotion/react";
 
 export const TasksList: React.FC = () => {
   const { user, setUser } = useContext(UserContext);
+  const { tasks } = user;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [selectedTaskId, setSelectedTaskId] = useState<UUID | null>(null);
@@ -109,6 +110,7 @@ export const TasksList: React.FC = () => {
 
   // Handler for clicking the more options button in a task
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>, taskId: UUID) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
     setSelectedTaskId(taskId);
 
@@ -200,6 +202,40 @@ export const TasksList: React.FC = () => {
         return [...prevSelectedTaskIds, taskId];
       }
     });
+  };
+
+  const handleMarkAsDone = (taskId : UUID) => {
+    if (taskId) {
+      const updatedTasks = tasks.map((task) => {
+        if (task.id === taskId) {
+          return { ...task, done: !task.done };
+        }
+        return task;
+      });
+      setUser((prevUser) => ({
+        ...prevUser,
+        tasks: updatedTasks,
+      }));
+
+      const allTasksDone = updatedTasks.every((task) => task.done);
+
+      if (allTasksDone) {
+        showToast(
+          <div>
+            <b>All tasks done</b>
+            <br />
+            <span>You've checked off all your todos. Well done!</span>
+          </div>,
+          {
+            icon: (
+              <div style={{ margin: "-6px 4px -6px -6px" }}>
+                <TaskIcon variant="success" scale={0.18} />
+              </div>
+            ),
+          }
+        );
+      }
+    }
   };
 
   const handleMarkSelectedAsDone = () => {
@@ -567,7 +603,7 @@ export const TasksList: React.FC = () => {
               id={task.id.toString()}
               backgroundColor={task.color}
               glow={user.settings[0].enableGlow}
-              done={task.done}
+              onClick={() => handleMarkAsDone(task.id)}
               blur={selectedTaskId !== task.id && open && !isMobile}
             >
               {multipleSelectedTasks.length > 0 && (
