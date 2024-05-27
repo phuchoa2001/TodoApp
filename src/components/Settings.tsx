@@ -37,6 +37,7 @@ import {
 } from "@mui/icons-material";
 import { defaultUser } from "../constants/defaultUser";
 import { UserContext } from "../contexts/UserContext";
+import { DarkModeContext } from "../contexts/DarkModeContext";
 import { iOS } from "../utils/iOS";
 import { showToast } from "../utils";
 
@@ -47,6 +48,7 @@ interface SettingsProps {
 
 export const SettingsDialog: React.FC<SettingsProps> = ({ open, onClose }) => {
   const { user, setUser } = useContext(UserContext);
+  const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);
   const { settings, emojisStyle } = user;
   const [userSettings, setUserSettings] = useState<AppSettings>(settings[0]);
   const [lastStyle] = useState<EmojiStyle>(emojisStyle);
@@ -363,6 +365,18 @@ export const SettingsDialog: React.FC<SettingsProps> = ({ open, onClose }) => {
               />
             }
             label="Move Done Tasks To Bottom"
+          />
+        </FormGroup>
+        <FormGroup>
+          <StyledFormLabel
+            sx={{ opacity: userSettings.doneToBottom ? 1 : 0.8 }}
+            control={
+              <Switch
+                checked={isDarkMode}
+                onChange={toggleDarkMode}
+              />
+            }
+            label="Night mode"
           />
         </FormGroup>
 
