@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 /**
  * Returns a task completion message based on the completion percentage.
  * @param {number} completionPercentage - The completion percentage of tasks.
@@ -6,16 +8,16 @@
 export const getTaskCompletionText = (completionPercentage: number): string => {
   switch (true) {
     case completionPercentage === 0:
-      return "No tasks completed yet. Keep going!";
+      return i18next.t("home.tasks.completionMessages.0");
     case completionPercentage === 100:
-      return "Congratulations! All tasks completed!";
+      return i18next.t("home.tasks.completionMessages.100");
     case completionPercentage >= 75:
-      return "Almost there!";
+      return i18next.t("home.tasks.completionMessages.75");
     case completionPercentage >= 50:
-      return "You're halfway there! Keep it up!";
+      return i18next.t("home.tasks.completionMessages.50");
     case completionPercentage >= 25:
-      return "You're making good progress.";
+      return i18next.t("home.tasks.completionMessages.25");
     default:
-      return "You're just getting started.";
+      return i18next.t("home.tasks.completionMessages.default");
   }
 };

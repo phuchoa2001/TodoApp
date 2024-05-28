@@ -1,25 +1,57 @@
 {
   "home": {
     "title": "Todo App",
-    "form": {
-      "title": "title",
-      "body": "body",
-      "validation": {
-        "title-required": "title can't be empty",
-        "title-max": "title must not exceed {{num}} characters",
-        "body-required": "body can't be empty"
+    "greeting": "Hello",
+    "offlineMessage": "You're offline but you can use the app!",
+    "tasks": {
+      "noTasks": "You have {{count}} task{{plural}} to complete.",
+      "completedTasks": "You've completed {{completed}} out of {{total}} tasks.",
+      "tasksDueToday": "Tasks due today: {{tasks}}",
+      "addTaskTooltip": "Add Task",
+      "addNewTaskTooltip": "Add New Task",
+      "completionMessages": {
+        "0": "No tasks completed yet. Keep going!",
+        "100": "Congratulations! All tasks completed!",
+        "75": "Almost there!",
+        "50": "You're halfway there! Keep it up!",
+        "25": "You're making good progress.",
+        "default": "You're just getting started."
       }
     },
-    "buttons": {
-      "submit": "Add new Post",
-      "reset": "Reset",
-      "delete": "Delete",
-      "update": "Update"
+    "greetings": {
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening",
+      "random": [
+        "Let's make today count! **1f680**",
+        "Get things done and conquer the day!",
+        "Embrace the power of productivity!",
+        "Set your goals, crush them, repeat.",
+        "Today is a new opportunity to be productive!",
+        "Make every moment count.",
+        "Stay organized, stay ahead.",
+        "Take charge of your day!",
+        "One task at a time, you've got this!",
+        "Productivity is the key to success. **1f511**",
+        "Let's turn plans into accomplishments!",
+        "Start small, achieve big.",
+        "Be efficient, be productive.",
+        "Harness the power of productivity!",
+        "Get ready to make things happen!",
+        "It's time to check off those tasks! **2705**",
+        "Start your day with a plan! **1f5d3-fe0f**",
+        "Stay focused, stay productive.",
+        "Unlock your productivity potential. **1f513**",
+        "Turn your to-do list into a to-done list! **1f4dd**",
+        "Have a wonderful {{day}}!",
+        "Happy {{month}}! A great month for productivity!",
+        "{{hoursLeft}} hours left in the day. Use them wisely!"
+      ]
     }
   },
   "languages": {
     "en": "English",
-    "vi": "Vietnamese", 
+    "vi": "Vietnamese",
     "zh": "Chinese"
   }
 }

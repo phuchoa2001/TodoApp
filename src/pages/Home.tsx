@@ -14,7 +14,7 @@ import {
   TasksCountContainer,
 } from "../styles";
 
-import { displayGreeting, getRandomGreeting, getTaskCompletionText } from "../utils";
+import { displayGreeting, getRandomGreeting , getTaskCompletionText } from "../utils";
 import { Emoji } from "emoji-picker-react";
 import { Box, Tooltip, Typography } from "@mui/material";
 import { useOnlineStatus } from "../hooks/useOnlineStatus";
@@ -55,7 +55,7 @@ const Home = () => {
     }, 6000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     const completedCount = tasks.filter((task) => task.done).length;
@@ -116,7 +116,7 @@ const Home = () => {
       <GreetingText key={greetingKey}>{renderGreetingWithEmojis(randomGreeting)}</GreetingText>
       {!isOnline && (
         <Offline>
-          <WifiOff /> You're offline but you can use the app!
+          <WifiOff /> {t("home.offlineMessage")}
         </Offline>
       )}
       {tasks.length > 0 && (
@@ -146,8 +146,8 @@ const Home = () => {
             <TaskCountTextContainer>
               <TaskCountHeader>
                 {completedTasksCount === 0
-                  ? `You have ${tasks.length} task${tasks.length > 1 ? "s" : ""} to complete.`
-                  : `You've completed ${completedTasksCount} out of ${tasks.length} tasks.`}
+                  ? t("home.tasks.noTasks", { count: tasks.length, plural: tasks.length > 1 ? "s" : "" })
+                  : t("home.tasks.completedTasks", { completed: completedTasksCount, total: tasks.length })}
               </TaskCountHeader>
               <TaskCompletionText>
                 {getTaskCompletionText(completedTaskPercentage)}
@@ -160,10 +160,7 @@ const Home = () => {
                   }}
                 >
                   <TodayRounded sx={{ fontSize: "20px", verticalAlign: "middle" }} />
-                  &nbsp;Tasks due today:&nbsp;
-                  <span translate="no">
-                    {new Intl.ListFormat("en", { style: "long" }).format(tasksDueTodayNames)}
-                  </span>
+                  &nbsp;{t("home.tasks.tasksDueToday", { tasks: new Intl.ListFormat("en", { style: "long" }).format(tasksDueTodayNames) })}
                 </span>
               )}
             </TaskCountTextContainer>
@@ -174,7 +171,7 @@ const Home = () => {
       <TasksList />
 
       {!isMobile && (
-        <Tooltip title={tasks.length > 0 ? "Add New Task" : "Add Task"} placement="left">
+        <Tooltip title={tasks.length > 0 ? t("home.tasks.addNewTaskTooltip") : t("home.tasks.addTaskTooltip")} placement="left">
           <AddButton
             animate={tasks.length === 0}
             glow={settings[0].enableGlow}
