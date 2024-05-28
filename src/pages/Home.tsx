@@ -22,9 +22,11 @@ import { AddRounded, TodayRounded, WifiOff } from "@mui/icons-material";
 import { UserContext } from "../contexts/UserContext";
 import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
   const { user } = useContext(UserContext);
+  const { t } = useTranslation();
   const { tasks, emojisStyle, settings, name } = user;
 
   const [randomGreeting, setRandomGreeting] = useState<string | ReactNode>("");
@@ -45,7 +47,7 @@ const Home = () => {
 
   useEffect(() => {
     setRandomGreeting(getRandomGreeting());
-    document.title = "Todo App";
+    document.title = t("home.title");
 
     const interval = setInterval(() => {
       setRandomGreeting(getRandomGreeting());

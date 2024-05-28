@@ -40,6 +40,7 @@ import { UserContext } from "../contexts/UserContext";
 import { DarkModeContext } from "../contexts/DarkModeContext";
 import { iOS } from "../utils/iOS";
 import { showToast } from "../utils";
+import CountrySelect from "./CountrySelect";
 
 interface SettingsProps {
   open: boolean;
@@ -73,8 +74,8 @@ export const SettingsDialog: React.FC<SettingsProps> = ({ open, onClose }) => {
   const getFlagEmoji = (countryCode: string): string =>
     typeof countryCode === "string"
       ? String.fromCodePoint(
-          ...[...countryCode.toUpperCase()].map((x) => 0x1f1a5 + x.charCodeAt(0))
-        )
+        ...[...countryCode.toUpperCase()].map((x) => 0x1f1a5 + x.charCodeAt(0))
+      )
       : "";
 
   const getAvailableVoices = (): SpeechSynthesisVoice[] => {
@@ -379,7 +380,10 @@ export const SettingsDialog: React.FC<SettingsProps> = ({ open, onClose }) => {
             label="Night mode"
           />
         </FormGroup>
-
+        <FormGroup>
+          <CountrySelect />
+        </FormGroup>
+        
         {settings[0].enableReadAloud && (
           <FormGroup>
             <FormControl>
@@ -392,9 +396,8 @@ export const SettingsDialog: React.FC<SettingsProps> = ({ open, onClose }) => {
                     onChange={() => setShowLocalVoices((prev) => !prev)}
                   />
                 }
-                label={`Local language voices only (${
-                  getLanguageRegion(navigator.language) || "?"
-                })`}
+                label={`Local language voices only (${getLanguageRegion(navigator.language) || "?"
+                  })`}
               />
               {filteredVoices.length !== 0 ? (
                 <StyledSelect

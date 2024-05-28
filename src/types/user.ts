@@ -69,6 +69,7 @@ export interface AppSettings {
   enableReadAloud: boolean;
   appBadge: boolean;
   voice: string;
+  languages : string,
   voiceVolume: number;
 }
 

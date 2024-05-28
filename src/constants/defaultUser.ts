@@ -21,6 +21,7 @@ export const defaultUser: User = {
       enableReadAloud: "speechSynthesis" in window,
       voice: "Google UK English Male",
       appBadge: false,
+      languages: "vi",
       voiceVolume: 0.6,
     },
   ],
