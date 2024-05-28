@@ -1,20 +1,52 @@
 {
   "home": {
     "title": "Ứng dụng việc cần làm",
-    "form": {
-      "title": "title",
-      "body": "body",
-      "validation": {
-        "title-required": "title can't be empty",
-        "title-max": "title must not exceed {{num}} characters",
-        "body-required": "body can't be empty"
+    "greeting": "Xin chào",
+    "offlineMessage": "Bạn đang ngoại tuyến nhưng vẫn có thể sử dụng ứng dụng!",
+    "tasks": {
+      "noTasks": "Bạn có {{count}} công việc{{plural}} cần hoàn thành.",
+      "completedTasks": "Bạn đã hoàn thành {{completed}} trong tổng số {{total}} công việc.",
+      "tasksDueToday": "Công việc đến hạn hôm nay: {{tasks}}",
+      "addTaskTooltip": "Thêm công việc",
+      "addNewTaskTooltip": "Thêm công việc mới",
+      "completionMessages": {
+        "0": "Chưa hoàn thành công việc nào. Tiếp tục cố gắng!",
+        "100": "Chúc mừng! Bạn đã hoàn thành tất cả công việc!",
+        "75": "Gần xong rồi!",
+        "50": "Bạn đã hoàn thành một nửa! Tiếp tục cố gắng!",
+        "25": "Bạn đang tiến bộ tốt.",
+        "default": "Bạn vừa mới bắt đầu."
       }
     },
-    "buttons": {
-      "submit": "Add new Post",
-      "reset": "Reset",
-      "delete": "Delete",
-      "update": "Update"
+    "greetings": {
+      "morning": "Chào buổi sáng",
+      "afternoon": "Chào buổi chiều",
+      "evening": "Chào buổi tối",
+      "random": [
+        "Hãy làm cho hôm nay trở nên đáng nhớ! **1f680**",
+        "Hoàn thành công việc và chinh phục ngày mới!",
+        "Nắm bắt sức mạnh của sự năng suất!",
+        "Đặt mục tiêu, hoàn thành chúng, lặp lại.",
+        "Hôm nay là cơ hội mới để làm việc hiệu quả!",
+        "Hãy làm cho mỗi khoảnh khắc đều có ý nghĩa.",
+        "Giữ tổ chức, luôn đi trước.",
+        "Nắm quyền kiểm soát ngày của bạn!",
+        "Hoàn thành từng nhiệm vụ một, bạn làm được mà!",
+        "Năng suất là chìa khóa của thành công. **1f511**",
+        "Hãy biến kế hoạch thành thành tựu!",
+        "Bắt đầu nhỏ, đạt được lớn.",
+        "Hãy làm việc hiệu quả, làm việc năng suất.",
+        "Nắm bắt sức mạnh của sự năng suất!",
+        "Hãy sẵn sàng để làm mọi thứ xảy ra!",
+        "Đã đến lúc kiểm tra các nhiệm vụ! **2705**",
+        "Bắt đầu ngày mới với một kế hoạch! **1f5d3-fe0f**",
+        "Giữ tập trung, làm việc hiệu quả.",
+        "Mở khóa tiềm năng năng suất của bạn. **1f513**",
+        "Biến danh sách công việc của bạn thành danh sách đã hoàn thành! **1f4dd**",
+        "Chúc bạn có một ngày tuyệt vời {{day}}!",
+        "Chúc mừng {{month}}! Một tháng tuyệt vời để làm việc hiệu quả!",
+        "{{hoursLeft}} giờ còn lại trong ngày. Hãy sử dụng chúng một cách khôn ngoan!"
+      ]
     }
   },
   "languages": {
