@@ -52,6 +52,7 @@ import { Task, UUID } from "../../types/user";
 import { calculateDateDifference, saveQRCode, showToast } from "../../utils";
 import Marquee from "react-fast-marquee";
 import { TaskIcon } from "..";
+import { useTranslation } from "react-i18next";
 
 interface TaskMenuProps {
   selectedTaskId: UUID | null;
@@ -73,6 +74,7 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
   handleSelectTask,
 }) => {
   const { user, setUser } = useContext(UserContext);
+  const { t } = useTranslation();
   const { tasks, name, settings, emojisStyle } = user;
   const [showShareDialog, setShowShareDialog] = useState<boolean>(false);
   const [shareTabVal, setShareTabVal] = useState<number>(0);
@@ -111,10 +113,10 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
     const linkToCopy = generateShareableLink(selectedTaskId, name || "User");
     try {
       await navigator.clipboard.writeText(linkToCopy);
-      showToast("Copied link to clipboard.");
+      showToast(t('task.copiedLink'));
     } catch (error) {
-      console.error("Error copying link to clipboard:", error);
-      showToast("Error copying link to clipboard", { type: "error" });
+      console.error(t('task.copyError'), error);
+      showToast(t('task.copyError'), { type: "error" });
     }
   };
 
@@ -123,17 +125,18 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Share Task",
-          text: `Check out this task: ${tasks.find((task) => task.id === selectedTaskId)?.name}`,
+          title: t('task.shareTask'),
+          text: `${t('task.shareTaskText')}${tasks.find((task) => task.id === selectedTaskId)?.name}`,
           url: linkToShare,
         });
       } catch (error) {
-        console.error("Error sharing link:", error);
+        console.error(t('task.shareError'), error);
       }
     }
   };
 
   const handleMarkAsDone = () => {
+
     // Toggles the "done" property of the selected task
     if (selectedTaskId) {
       handleCloseMoreMenu();
@@ -153,9 +156,9 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
       if (allTasksDone) {
         showToast(
           <div>
-            <b>All tasks done</b>
+            <b>{t('task.allTasksDoneTitle')}</b>
             <br />
-            <span>You've checked off all your todos. Well done!</span>
+            <span>{t('task.allTasksDoneMessage')}</span>
           </div>,
           {
             icon: (
@@ -226,14 +229,14 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
     }).format(new Date(selectedTask?.date || ""));
 
     const taskDeadline = selectedTask?.deadline
-      ? ". Task Deadline: " +
-        calculateDateDifference(
-          new Date(selectedTask.deadline) || "",
-          voice ? voice.lang : navigator.language // Read task deadline in voice language
-        )
+      ? `. ${t('task.taskDeadline')}: ` +
+      calculateDateDifference(
+        new Date(selectedTask.deadline) || "",
+        voice ? voice.lang : navigator.language // Read task deadline in voice language
+      )
       : "";
 
-    const textToRead = `${taskName}. ${taskDescription}. Date: ${taskDate}${taskDeadline}`;
+    const textToRead = `${taskName}. ${taskDescription}. ${t('task.date')}: ${taskDate}${taskDeadline}`;
 
     const utterThis: SpeechSynthesisUtterance = new SpeechSynthesisUtterance(textToRead);
 
@@ -263,15 +266,14 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
 
     const SpeechToastId = toast(
       () => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
         const [isPlaying, setIsPlaying] = useState<boolean>(true);
         return (
           <ReadAloudContainer>
             <ReadAloudHeader translate="yes">
-              <RecordVoiceOver /> Read aloud: <span translate="no">{selectedTask?.name}</span>
+              <RecordVoiceOver /> {t('task.readAloud')}: <span translate="no">{selectedTask?.name}</span>
             </ReadAloudHeader>
             <span translate="yes" style={{ marginTop: "8px", fontSize: "16px" }}>
-              Voice: <span translate="no">{utterThis.voice?.name || "Default"}</span>
+              {t('task.voice')}: <span translate="no">{utterThis.voice?.name || t('task.defaultVoice')}</span>
             </span>
             <div translate="no">
               <Marquee delay={0.6} play={isPlaying}>
@@ -330,28 +332,29 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
     }
   };
 
+  const selectedTask = tasks.find((task) => task.id === selectedTaskId);
   const menuItems: JSX.Element = (
     <div>
       <StyledMenuItem onClick={handleMarkAsDone}>
-        {tasks.find((task) => task.id === selectedTaskId)?.done ? <Close /> : <Done />}
+        {selectedTask?.done ? <Close /> : <Done />}
         &nbsp;{" "}
-        {tasks.find((task) => task.id === selectedTaskId)?.done
-          ? "Mark as not done"
-          : "Mark as done"}
+        {selectedTask?.done
+          ? t('task.markAsNotDone')
+          : t('task.markAsDone')}
       </StyledMenuItem>
       <StyledMenuItem onClick={handlePin}>
         <PushPinRounded sx={{ textDecoration: "line-through" }} />
-        &nbsp; {tasks.find((task) => task.id === selectedTaskId)?.pinned ? "Unpin" : "Pin"}
+        &nbsp; {selectedTask?.pinned ? t('task.unpin') : t('task.pin')}
       </StyledMenuItem>
 
       {selectedTasks.length === 0 && (
         <StyledMenuItem onClick={() => handleSelectTask(selectedTaskId || crypto.randomUUID())}>
-          <RadioButtonChecked /> &nbsp; Select
+          <RadioButtonChecked /> &nbsp; {t('task.select')}
         </StyledMenuItem>
       )}
 
       <StyledMenuItem onClick={redirectToTaskDetails}>
-        <LaunchRounded /> &nbsp; Task details
+        <LaunchRounded /> &nbsp; {t('task.taskDetails')}
       </StyledMenuItem>
 
       {settings[0].enableReadAloud && (
@@ -359,7 +362,7 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
           onClick={handleReadAloud}
           disabled={window.speechSynthesis.speaking || window.speechSynthesis.pending}
         >
-          <RecordVoiceOverRounded /> &nbsp; Read Aloud
+          <RecordVoiceOverRounded /> &nbsp; {t('task.readAloud')}
         </StyledMenuItem>
       )}
 
@@ -369,7 +372,7 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
           handleCloseMoreMenu();
         }}
       >
-        <LinkRounded /> &nbsp; Share
+        <LinkRounded /> &nbsp; {t('task.share')}
       </StyledMenuItem>
 
       <Divider />
@@ -379,10 +382,10 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
           handleCloseMoreMenu();
         }}
       >
-        <EditRounded /> &nbsp; Edit
+        <EditRounded /> &nbsp; {t('task.edit')}
       </StyledMenuItem>
       <StyledMenuItem onClick={handleDuplicateTask}>
-        <ContentCopy /> &nbsp; Duplicate
+        <ContentCopy /> &nbsp; {t('task.duplicate')}
       </StyledMenuItem>
       <Divider />
       <StyledMenuItem
@@ -392,7 +395,7 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
           handleCloseMoreMenu();
         }}
       >
-        <DeleteRounded /> &nbsp; Delete
+        <DeleteRounded /> &nbsp; {t('task.delete')}
       </StyledMenuItem>
     </div>
   );
@@ -455,22 +458,22 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
           },
         }}
       >
-        <DialogTitle>Share Task</DialogTitle>
+        <DialogTitle>{t('task.shareTask')}</DialogTitle>
         <DialogContent>
           <span>
-            Share Task:{" "}
-            <b translate="no">{tasks.find((task) => task.id === selectedTaskId)?.name}</b>
+            {t('task.shareTaskLabel')}
+            <b translate="no">{selectedTask?.name}</b>
           </span>
           <Tabs value={shareTabVal} onChange={handleTabChange} sx={{ m: "8px 0" }}>
-            <StyledTab label="Link" icon={<LinkRounded />} />
-            <StyledTab label="QR Code" icon={<QrCode2Rounded />} />
+            <StyledTab label={t('task.link')} icon={<LinkRounded />} />
+            <StyledTab label={t('task.qrCode')} icon={<QrCode2Rounded />} />
           </Tabs>
           <CustomTabPanel value={shareTabVal} index={0}>
             <ShareField
               value={generateShareableLink(selectedTaskId, name || "User")}
               fullWidth
               variant="outlined"
-              label="Shareable Link"
+              label={t('task.shareableLink')}
               InputProps={{
                 readOnly: true,
                 startAdornment: (
@@ -481,12 +484,10 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
                 endAdornment: (
                   <InputAdornment position="end">
                     <Button
-                      onClick={() => {
-                        handleCopyToClipboard();
-                      }}
+                      onClick={handleCopyToClipboard}
                       sx={{ p: "12px", borderRadius: "14px", mr: "4px" }}
                     >
-                      <ContentCopyRounded /> &nbsp; Copy
+                      <ContentCopyRounded /> &nbsp; {t('task.copy')}
                     </Button>
                   </InputAdornment>
                 ),
@@ -520,28 +521,21 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
             >
               <DownloadQrCodeBtn
                 variant="outlined"
-                onClick={() =>
-                  saveQRCode(tasks.find((task) => task.id === selectedTaskId)?.name || "")
-                }
+                onClick={() => saveQRCode(selectedTask?.name || "")}
               >
-                <DownloadRounded /> &nbsp; Download QR Code
+                <DownloadRounded /> &nbsp; {t('task.downloadQRCode')}
               </DownloadQrCodeBtn>
             </Box>
           </CustomTabPanel>
           <Alert severity="info" sx={{ mt: "20px" }}>
-            <AlertTitle>Share Your Task</AlertTitle>
-            Share your task with others using the link or QR code. Copy the link to share manually
-            or use the share button to send it via other apps. You can also download the QR code for
-            easy access.
+            <AlertTitle>{t('task.shareYourTask')}</AlertTitle>
+            {t('task.shareYourTaskDescription')}
           </Alert>
-          {/* <Alert severity="warning" sx={{ mt: "8px" }}>
-            Anyone with access to this link will be able to view your name and task details.
-          </Alert> */}
         </DialogContent>
         <DialogActions>
-          <DialogBtn onClick={() => setShowShareDialog(false)}>Close</DialogBtn>
+          <DialogBtn onClick={() => setShowShareDialog(false)}>{t('task.close')}</DialogBtn>
           <DialogBtn onClick={handleShare}>
-            <IosShare sx={{ mb: "4px" }} /> &nbsp; Share
+            <IosShare sx={{ mb: "4px" }} /> &nbsp; {t('task.share')}
           </DialogBtn>
         </DialogActions>
       </Dialog>
@@ -592,7 +586,7 @@ const SheetContent = styled.div`
     }
   }
 `;
-const StyledMenuItem = styled(MenuItem)<{ clr?: string }>`
+const StyledMenuItem = styled(MenuItem) <{ clr?: string }>`
   margin: 0 6px;
   padding: 12px;
   border-radius: 12px;

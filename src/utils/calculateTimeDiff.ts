@@ -1,4 +1,5 @@
 import { timeAgo } from ".";
+import i18next from 'i18next';
 
 /**
  * Calculates the difference between a given date and the current date.
@@ -19,24 +20,24 @@ export const calculateDateDifference = (
   const userLocale = lang;
 
   if (targetDate < currentDate) {
-    return `Not completed on time (${timeAgo(targetDate, userLocale)})`;
+    return `${i18next.t('task.notCompletedOnTime')} (${timeAgo(targetDate, userLocale)})`;
   } else if (targetDate.toDateString() === currentDate.toDateString()) {
     return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(
       differenceHours > 0 ? differenceHours : differenceMinutes,
-      differenceHours > 0 ? "hour" : "minute"
+      differenceHours > 0 ? i18next.t('task.hour') : i18next.t('task.minute')
     );
   } else if (targetDate.getDate() === currentDate.getDate() + 1) {
-    return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(1, "day");
+    return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(1, i18next.t('task.day'));
   } else if (differenceDays <= 7) {
     const dayOfWeek = new Intl.DateTimeFormat(userLocale, { weekday: "long" }).format(date);
     return `${dayOfWeek} (${new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(
       differenceDays,
-      "day"
+      i18next.t('task.day')
     )})`;
   } else {
     return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(
       differenceDays,
-      "day"
+      i18next.t('task.day')
     );
   }
 };
