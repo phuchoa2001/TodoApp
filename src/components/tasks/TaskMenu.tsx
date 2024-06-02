@@ -223,6 +223,7 @@ export const TaskMenu: React.FC<TaskMenuProps> = ({
     const taskDescription =
       selectedTask?.description?.replace(/((?:https?):\/\/[^\s/$.?#].[^\s]*)/gi, "[link]") || "";
     // Read task date in voice language
+
     const taskDate = new Intl.DateTimeFormat(voice ? voice.lang : navigator.language, {
       dateStyle: "full",
       timeStyle: "short",

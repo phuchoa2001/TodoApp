@@ -24,20 +24,20 @@ export const calculateDateDifference = (
   } else if (targetDate.toDateString() === currentDate.toDateString()) {
     return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(
       differenceHours > 0 ? differenceHours : differenceMinutes,
-      differenceHours > 0 ? i18next.t('task.hour') : i18next.t('task.minute')
+      differenceHours > 0 ? "hour" : "minute"
     );
   } else if (targetDate.getDate() === currentDate.getDate() + 1) {
-    return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(1, i18next.t('task.day'));
+    return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(1, "day");
   } else if (differenceDays <= 7) {
     const dayOfWeek = new Intl.DateTimeFormat(userLocale, { weekday: "long" }).format(date);
     return `${dayOfWeek} (${new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(
       differenceDays,
-      i18next.t('task.day')
+      "day"
     )})`;
   } else {
     return new Intl.RelativeTimeFormat(userLocale, { numeric: "auto" }).format(
       differenceDays,
-      i18next.t('task.day')
+      "day"
     );
   }
 };

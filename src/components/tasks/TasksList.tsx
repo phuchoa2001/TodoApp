@@ -62,14 +62,17 @@ import { useStorageState } from "../../hooks/useStorageState";
 import { DESCRIPTION_SHORT_LENGTH, URL_REGEX } from "../../constants";
 import { useCtrlS } from "../../hooks/useCtrlS";
 import { useTheme } from "@emotion/react";
+import { useTranslation } from "react-i18next";
 
 /**
  * Component to display a list of tasks.
  */
 
 export const TasksList: React.FC = () => {
+  const { t } = useTranslation();
   const { user, setUser } = useContext(UserContext);
   const { tasks } = user;
+  const lang = user.settings[0].languages;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [selectedTaskId, setSelectedTaskId] = useState<UUID | null>(null);
@@ -99,7 +102,7 @@ export const TasksList: React.FC = () => {
 
   const listFormat = useMemo(
     () =>
-      new Intl.ListFormat("en-US", {
+      new Intl.ListFormat(lang === "vi" ? "vi-VN" : "en-US", {
         style: "long",
         type: "conjunction",
       }),
@@ -160,6 +163,7 @@ export const TasksList: React.FC = () => {
     },
     [search, selectedCatId, user.settings]
   );
+  const reorderedTasks = reorderTasks(user.tasks);
 
   const handleDeleteTask = () => {
     // Opens the delete task dialog
@@ -204,7 +208,7 @@ export const TasksList: React.FC = () => {
     });
   };
 
-  const handleMarkAsDone = (taskId : UUID) => {
+  const handleMarkAsDone = (taskId: UUID) => {
     if (taskId) {
       const updatedTasks = tasks.map((task) => {
         if (task.id === taskId) {
@@ -459,7 +463,7 @@ export const TasksList: React.FC = () => {
           <SearchInput
             focused
             color="primary"
-            placeholder="Search for task..."
+            placeholder={t('task.searchPlaceholder')}
             autoComplete="off"
             value={search}
             onChange={(e) => {
@@ -545,7 +549,7 @@ export const TasksList: React.FC = () => {
           <SelectedTasksContainer>
             <div>
               <h3 style={{ margin: 0, display: "flex", alignItems: "center" }}>
-                <RadioButtonChecked /> &nbsp; Selected {multipleSelectedTasks.length} task
+                <RadioButtonChecked /> &nbsp; {t('task.selectedTasks')} {multipleSelectedTasks.length} {t('task.selectedTasks')}
                 {multipleSelectedTasks.length > 1 ? "s" : ""}
               </h3>
               <span style={{ fontSize: "14px", opacity: 0.8 }}>
@@ -558,7 +562,7 @@ export const TasksList: React.FC = () => {
             </div>
             {/* TODO: add more features */}
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Tooltip title="Mark selected as done">
+              <Tooltip title={t('task.markSelectedAsDone')}>
                 <IconButton
                   sx={{ color: getFontColor(theme.secondary) }}
                   size="large"
@@ -567,12 +571,12 @@ export const TasksList: React.FC = () => {
                   <DoneAll />
                 </IconButton>
               </Tooltip>
-              <Tooltip title="Delete selected">
+              <Tooltip title={t('task.deleteSelected')}>
                 <IconButton color="error" size="large" onClick={handleDeleteSelected}>
                   <Delete />
                 </IconButton>
               </Tooltip>
-              <Tooltip sx={{ color: getFontColor(theme.secondary) }} title="Cancel">
+              <Tooltip sx={{ color: getFontColor(theme.secondary) }} title={t('task.cancel')}>
                 <IconButton size="large" onClick={() => setMultipleSelectedTasks([])}>
                   <CancelRounded />
                 </IconButton>
@@ -580,7 +584,7 @@ export const TasksList: React.FC = () => {
             </div>
           </SelectedTasksContainer>
         )}
-        {search && reorderTasks(user.tasks).length > 1 && user.tasks.length > 0 && (
+        {search && reorderedTasks.length > 1 && user.tasks.length > 0 && (
           <div
             style={{
               textAlign: "center",
@@ -590,15 +594,14 @@ export const TasksList: React.FC = () => {
             }}
           >
             <b>
-              Found {reorderTasks(user.tasks).length} task
-              {reorderTasks(user.tasks).length > 1 ? "s" : ""}
+              {t('task.foundTasks')} {reorderedTasks.length} {t('task.task')}
+              {reorderedTasks.length > 1 ? t('task.tasks') : ""}
             </b>
           </div>
         )}
         {user.tasks.length !== 0 ? (
           reorderTasks(user.tasks).map((task) => (
             <TaskContainer
-              // ref={(ref) => (scrollToRefs.current[task.id.toString()] = ref)}
               key={task.id}
               id={task.id.toString()}
               backgroundColor={task.color}
@@ -624,19 +627,12 @@ export const TasksList: React.FC = () => {
                 />
               )}
               {task.emoji || task.done ? (
-                <EmojiContainer
-                  clr={getFontColor(task.color)}
-                  // onDoubleClick={() => handleSelectTask(task.id)}
-                >
+                <EmojiContainer clr={getFontColor(task.color)}>
                   {task.done ? (
                     <DoneRounded fontSize="large" />
                   ) : user.emojisStyle === EmojiStyle.NATIVE ? (
                     <div>
-                      <Emoji
-                        size={iOS ? 48 : 36}
-                        unified={task.emoji || ""}
-                        emojiStyle={EmojiStyle.NATIVE}
-                      />
+                      <Emoji size={iOS ? 48 : 36} unified={task.emoji || ""} emojiStyle={EmojiStyle.NATIVE} />
                     </div>
                   ) : (
                     <Emoji size={48} unified={task.emoji || ""} emojiStyle={user.emojisStyle} />
@@ -646,25 +642,25 @@ export const TasksList: React.FC = () => {
               <TaskInfo translate="no">
                 {task.pinned && (
                   <Pinned translate="yes">
-                    <PushPinRounded fontSize="small" /> &nbsp; Pinned
+                    <PushPinRounded fontSize="small" /> &nbsp; {t('task.pinned')}
                   </Pinned>
                 )}
                 <TaskHeader>
                   <TaskName done={task.done}>{highlightMatchingText(task.name)}</TaskName>
                   <Tooltip
-                    title={new Intl.DateTimeFormat(navigator.language, {
+                    title={new Intl.DateTimeFormat(user.settings[0].languages, {
                       dateStyle: "full",
                       timeStyle: "medium",
                     }).format(new Date(task.date))}
                   >
-                    <TaskDate>{formatDate(new Date(task.date))}</TaskDate>
+                    <TaskDate>{formatDate(new Date(task.date) , user.settings[0].languages)}</TaskDate>
                   </Tooltip>
                 </TaskHeader>
 
                 <TaskDescription done={task.done}>{renderTaskDescription(task)} </TaskDescription>
                 {task.deadline && (
                   <Tooltip
-                    title={new Intl.DateTimeFormat(navigator.language, {
+                    title={new Intl.DateTimeFormat(user.settings[0].languages, {
                       dateStyle: "full",
                       timeStyle: "medium",
                     }).format(new Date(task.deadline))}
@@ -684,7 +680,7 @@ export const TasksList: React.FC = () => {
                       {!task.done && (
                         <>
                           {" • "}
-                          {calculateDateDifference(new Date(task.deadline))}
+                          {calculateDateDifference(new Date(task.deadline) , user.settings[0].languages)}
                         </>
                       )}
                     </TimeLeft>
@@ -695,7 +691,7 @@ export const TasksList: React.FC = () => {
                     translate="yes"
                     style={{ opacity: 0.8, display: "flex", alignItems: "center", gap: "4px" }}
                   >
-                    <Link /> Shared by{" "}
+                    <Link /> {t('task.sharedBy')}{" "}
                     <span translate={task.sharedBy === "User" ? "yes" : "no"}>{task.sharedBy}</span>
                   </div>
                 )}
@@ -731,9 +727,9 @@ export const TasksList: React.FC = () => {
           ))
         ) : (
           <NoTasks>
-            <b>You don't have any tasks yet</b>
+            <b>{t('task.noTasks')}</b>
             <br />
-            Click on the <b>+</b> button to add one
+            <div dangerouslySetInnerHTML={{ __html: t('task.clickToAdd') }} />
           </NoTasks>
         )}
         {search && reorderTasks(user.tasks).length === 0 && user.tasks.length > 0 && (
@@ -745,9 +741,9 @@ export const TasksList: React.FC = () => {
               marginTop: "18px",
             }}
           >
-            <b>No tasks found</b>
+            <b>{t('task.noTasksFound')}</b>
             <br />
-            Try searching with different keywords.
+            {t('task.tryDifferentKeywords')}
             <div style={{ marginTop: "14px" }}>
               <TaskIcon scale={0.8} />
             </div>
@@ -782,7 +778,7 @@ export const TasksList: React.FC = () => {
         />
       </TasksContainer>
       <Dialog open={deleteDialogOpen} onClose={cancelDeleteTask}>
-        <DialogTitle>Are you sure you want to delete the task?</DialogTitle>
+        <DialogTitle>{t('task.deleteConfirmation')}</DialogTitle>
         <DialogContent>
           {selectedTask !== undefined && (
             <>
@@ -795,21 +791,21 @@ export const TasksList: React.FC = () => {
                     gap: "6px",
                   }}
                 >
-                  <b>Emoji:</b>{" "}
+                  <b>{t('task.emoji')}:</b>{" "}
                   <Emoji size={28} emojiStyle={user.emojisStyle} unified={selectedTask.emoji} />
                 </p>
               )}
               <p>
-                <b>Task Name:</b> {selectedTask.name}
+                <b>{t('task.taskName')}:</b> {selectedTask.name}
               </p>
               {selectedTask.description && (
                 <p>
-                  <b>Task Description:</b> {selectedTask.description.replace(URL_REGEX, "[link]")}
+                  <b>{t('task.taskDescription')}:</b> {selectedTask.description.replace(URL_REGEX, "[link]")}
                 </p>
               )}
               {selectedTask.category?.[0]?.name && (
                 <p>
-                  <b>{selectedTask.category.length > 1 ? "Categories" : "Category"}:</b>{" "}
+                  <b>{selectedTask.category.length > 1 ? t('task.categories') : t('task.category')}:</b>{" "}
                   {listFormat.format(selectedTask.category.map((cat) => cat.name))}
                 </p>
               )}
@@ -818,15 +814,15 @@ export const TasksList: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <DialogBtn onClick={cancelDeleteTask} color="primary">
-            Cancel
+            {t('task.cancel')}
           </DialogBtn>
           <DialogBtn onClick={confirmDeleteTask} color="error">
-            <DeleteRounded /> &nbsp; Delete
+            <DeleteRounded /> &nbsp; {t('task.delete')}
           </DialogBtn>
         </DialogActions>
       </Dialog>
       <Dialog open={deleteSelectedOpen}>
-        <DialogTitle>Are you sure you want to delete selected tasks?</DialogTitle>
+        <DialogTitle>{t('task.deleteSelectedConfirmation')}</DialogTitle>
         <DialogContent>
           {listFormat.format(
             multipleSelectedTasks
@@ -836,7 +832,7 @@ export const TasksList: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <DialogBtn onClick={() => setDeleteSelectedOpen(false)} color="primary">
-            Cancel
+            {t('task.cancel')}
           </DialogBtn>
           <DialogBtn
             onClick={() => {
@@ -850,7 +846,7 @@ export const TasksList: React.FC = () => {
             }}
             color="error"
           >
-            Delete
+            <DeleteRounded /> &nbsp; {t('task.delete')}
           </DialogBtn>
         </DialogActions>
       </Dialog>

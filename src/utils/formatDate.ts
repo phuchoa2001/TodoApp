@@ -1,4 +1,4 @@
-export const formatDate = (date: Date): string => {
+export const formatDate = (date: Date , locale? : string): string => {
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(today.getDate() - 1);
@@ -7,7 +7,7 @@ export const formatDate = (date: Date): string => {
 
   const timeDifference = date.getTime() - today.getTime();
 
-  const rtf = new Intl.RelativeTimeFormat(navigator.language, { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat(locale ||navigator.language, { numeric: "auto" });
 
   if (isSameDay(date, today)) {
     return rtf.format(0, "day") + ` ${formatTime(date)}`;
