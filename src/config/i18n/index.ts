@@ -3,18 +3,10 @@ import { initReactI18next } from 'react-i18next'
 
 import en from './locales/en/translation.json'
 import vi from './locales/vi/translation.json'
-
-const preferredLanguage = navigator.language === 'vi' ? 'vi' : 'en';
-const storedLanguage = localStorage.getItem('user');
-let lang;
-
-if (storedLanguage) {
-  const storageUser = JSON.parse(storedLanguage)
-  lang = storageUser.settings[0].languages;
-}
+import { getLanguageFromLocalStorage } from '../../utils/language'
 
 i18n.use(initReactI18next).init({
-  lng: lang || preferredLanguage,
+  lng: getLanguageFromLocalStorage(),
   fallbackLng: 'en',
   resources: {
     en: {

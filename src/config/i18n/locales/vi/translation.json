@@ -107,6 +107,45 @@
     "category": "Danh mục",
     "deleteSelectedConfirmation": "Bạn có chắc chắn muốn xóa các công việc đã chọn không?"
   },
+  "navigation": {
+    "tasks": "Công việc",
+    "categories": "Danh mục",
+    "add": "Thêm",
+    "transfer": "Chuyển",
+    "profile": "Hồ sơ"
+  },
+  "credits": {
+    "madeWithLove": "Được tạo ra với",
+    "by": "bởi"
+  },
+  "menu": {
+    "tasks": "Công việc",
+    "addTask": "Thêm công việc",
+    "purgeTasks": "Xóa công việc",
+    "categories": "Danh mục",
+    "transfer": "Chuyển",
+    "github": "Github",
+    "reportIssue": "Báo cáo vấn đề",
+    "buyCoffee": "Mời tôi một ly cà phê",
+    "tasksToDo": "công việc cần làm",
+    "openIssues": "vấn đề đang mở",
+    "supporters": "người ủng hộ trên Buy me a coffee",
+    "stars": "sao trên Github",
+    "installApp": "Cài đặt ứng dụng",
+    "logout": "Đăng xuất",
+    "settings": "Cài đặt",
+    "userProfile": "Hồ sơ người dùng",
+    "lastUpdate": "Cập nhật lần cuối",
+    "logoutConfirmation": "Bạn có chắc chắn muốn đăng xuất không? Các công việc của bạn sẽ không được lưu.",
+    "cancel": "Hủy bỏ",
+    "errorProfilePicture": "Lỗi URL ảnh đại diện",
+    "user": "Người dùng"
+  },
+  "messages": {
+    "logoutSuccess": "Bạn đã đăng xuất thành công",
+    "appInstalled": "Ứng dụng đã được cài đặt thành công!",
+    "installDismissed": "Đã hủy cài đặt."
+  },
   "languages": {
     "en": "Tiếng Anh",
     "vi": "Tiếng Việt",
