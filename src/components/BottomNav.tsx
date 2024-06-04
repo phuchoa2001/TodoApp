@@ -20,6 +20,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useResponsiveDisplay } from "../hooks/useResponsiveDisplay";
 import { UserContext } from "../contexts/UserContext";
 import { getFontColor } from "../utils";
+import { useTranslation } from "react-i18next";
 
 /**
  * Component for rendering the bottom navigation bar.
@@ -28,6 +29,7 @@ export const BottomNav = (): JSX.Element | null => {
   const { user } = useContext(UserContext);
   const { tasks, settings } = user;
   const [value, setValue] = useState<number | undefined>();
+  const { t } = useTranslation();
 
   const theme = useTheme();
   const n = useNavigate();
@@ -84,47 +86,47 @@ export const BottomNav = (): JSX.Element | null => {
           setValue(newValue);
         }}
       >
-        <NavigationButton
-          onClick={() => n("/")}
-          label="Tasks"
-          icon={
-            <Badge
-              color="primary"
-              badgeContent={value !== 0 ? tasks.filter((task) => !task.done).length : undefined}
-              max={99}
-            >
-              <TaskAlt sx={{ fontSize: smallIconSize }} />
-            </Badge>
-          }
-        />
-        <NavigationButton
-          onClick={() => n("/categories")}
-          label="Categories"
-          icon={<CategoryRounded sx={{ fontSize: smallIconSize }} />}
-          disabled={!settings[0].enableCategories}
-        />
-        <NavigationButton
-          onClick={() => n("add")}
-          showLabel={false}
-          aria-label="Add"
-          icon={
-            <AddIcon
-              clr={theme.palette.primary.main}
-              fontSize="large"
-              animate={tasks.length === 0 && value !== 2}
-            />
-          }
-        />
-        <NavigationButton
-          onClick={() => n("transfer")}
-          label="Transfer"
-          icon={<GetAppRounded sx={{ fontSize: smallIconSize }} />}
-        />
-        <NavigationButton
-          onClick={() => n("user")}
-          label="Profile"
-          icon={<PersonRounded sx={{ fontSize: smallIconSize }} />}
-        />
+      <NavigationButton
+        onClick={() => n("/")}
+        label={t('navigation.tasks')}
+        icon={
+          <Badge
+            color="primary"
+            badgeContent={value !== 0 ? tasks.filter((task) => !task.done).length : undefined}
+            max={99}
+          >
+            <TaskAlt sx={{ fontSize: smallIconSize }} />
+          </Badge>
+        }
+      />
+      <NavigationButton
+        onClick={() => n("/categories")}
+        label={t('navigation.categories')}
+        icon={<CategoryRounded sx={{ fontSize: smallIconSize }} />}
+        disabled={!settings[0].enableCategories}
+      />
+      <NavigationButton
+        onClick={() => n("add")}
+        showLabel={false}
+        aria-label={t('navigation.add')}
+        icon={
+          <AddIcon
+            clr={theme.palette.primary.main}
+            fontSize="large"
+            animate={tasks.length === 0 && value !== 2}
+          />
+        }
+      />
+      <NavigationButton
+        onClick={() => n("transfer")}
+        label={t('navigation.transfer')}
+        icon={<GetAppRounded sx={{ fontSize: smallIconSize }} />}
+      />
+      <NavigationButton
+        onClick={() => n("user")}
+        label={t('navigation.profile')}
+        icon={<PersonRounded sx={{ fontSize: smallIconSize }} />}
+      />
       </StyledBottomNavigation>
     </Container>
   );

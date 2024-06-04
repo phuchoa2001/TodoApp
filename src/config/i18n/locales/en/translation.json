@@ -107,6 +107,45 @@
     "category": "Category",
     "deleteSelectedConfirmation": "Are you sure you want to delete selected tasks?"
   },
+  "navigation": {
+    "tasks": "Tasks",
+    "categories": "Categories",
+    "add": "Add",
+    "transfer": "Transfer",
+    "profile": "Profile"
+  },
+  "credits": {
+    "madeWithLove": "Made with",
+    "by": "by"
+  },
+  "menu": {
+    "tasks": "Tasks",
+    "addTask": "Add Task",
+    "purgeTasks": "Purge Tasks",
+    "categories": "Categories",
+    "transfer": "Transfer",
+    "github": "Github",
+    "reportIssue": "Report Issue",
+    "buyCoffee": "Buy me a coffee",
+    "tasksToDo": "tasks to do",
+    "openIssues": "open issues",
+    "supporters": "supporters on Buy me a coffee",
+    "stars": "stars on Github",
+    "installApp": "Install App",
+    "logout": "Logout",
+    "settings": "Settings",
+    "userProfile": "User Profile",
+    "lastUpdate": "Last update",
+    "logoutConfirmation": "Are you sure you want to logout? Your tasks will not be saved.",
+    "cancel": "Cancel",
+    "errorProfilePicture": "Error in profile picture URL",
+    "user": "User"
+  },
+  "messages": {
+    "logoutSuccess": "You have been successfully logged out",
+    "appInstalled": "App installed successfully!",
+    "installDismissed": "Installation dismissed."
+  },
   "languages": {
     "en": "English",
     "vi": "Vietnamese",

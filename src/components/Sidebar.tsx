@@ -41,10 +41,12 @@ import { fetchGitHubInfo } from "../services/githubApi";
 import { showToast, timeAgo } from "../utils";
 import bmcLogo from "../assets/bmc-logo.svg";
 import { fetchBMCInfo } from "../services/bmcApi";
+import { useTranslation } from "react-i18next";
 
 export const ProfileSidebar = () => {
   const { user, setUser } = useContext(UserContext);
   const n = useNavigate();
+  const { t } = useTranslation();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -99,7 +101,7 @@ export const ProfileSidebar = () => {
   const handleLogout = () => {
     setUser(defaultUser);
     handleLogoutConfirmationClose();
-    showToast("You have been successfully logged out");
+    showToast(t('messages.logoutSuccess'));
   };
 
   interface BeforeInstallPromptEvent extends Event {
@@ -141,7 +143,7 @@ export const ProfileSidebar = () => {
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === "accepted") {
-          showToast("App installed successfully!");
+          showToast(t('messages.appInstalled'));
           if ("setAppBadge" in navigator) {
             setUser((prevUser) => ({
               ...prevUser,
@@ -156,7 +158,7 @@ export const ProfileSidebar = () => {
           handleClose();
         }
         if (choiceResult.outcome === "dismissed") {
-          showToast("Installation dismissed.", { type: "error" });
+          showToast(t('messages.installDismissed'), { type: "error" });
         }
       });
     }
@@ -175,15 +177,14 @@ export const ProfileSidebar = () => {
         >
           <Avatar
             src={(user.profilePicture as string) || undefined}
-            alt={user.name || "User"}
+            alt={user.name || t('menu.user')}
             onError={() => {
               setUser((prevUser) => ({
                 ...prevUser,
                 profilePicture: null,
               }));
-
-              showToast("Error in profile picture URL", { type: "error" });
-              throw new Error("Error in profile picture URL");
+              showToast(t('menu.errorProfilePicture'), { type: "error" });
+              throw new Error(t('menu.errorProfilePicture'));
             }}
             sx={{
               width: "52px",
@@ -220,72 +221,41 @@ export const ProfileSidebar = () => {
           </h2>
         </LogoContainer>
 
-        <StyledMenuItem
-          onClick={() => {
-            n("/");
-            handleClose();
-          }}
-        >
-          <TaskAltRounded /> &nbsp; Tasks
+        <StyledMenuItem onClick={() => { n("/"); handleClose(); }}>
+          <TaskAltRounded /> &nbsp; {t('menu.tasks')}
           {user.tasks.filter((task) => !task.done).length > 0 && (
-            <Tooltip title={`${user.tasks.filter((task) => !task.done).length} tasks to do`}>
+            <Tooltip title={`${user.tasks.filter((task) => !task.done).length} ${t('menu.tasksToDo')}`}>
               <MenuLabel>
-                {user.tasks.filter((task) => !task.done).length > 99
-                  ? "99+"
-                  : user.tasks.filter((task) => !task.done).length}
+                {user.tasks.filter((task) => !task.done).length > 99 ? "99+" : user.tasks.filter((task) => !task.done).length}
               </MenuLabel>
             </Tooltip>
           )}
         </StyledMenuItem>
 
-        <StyledMenuItem
-          onClick={() => {
-            n("/add");
-            handleClose();
-          }}
-        >
-          <AddRounded /> &nbsp; Add Task
+        <StyledMenuItem onClick={() => { n("/add"); handleClose(); }}>
+          <AddRounded /> &nbsp; {t('menu.addTask')}
         </StyledMenuItem>
 
-        <StyledMenuItem
-          onClick={() => {
-            n("/purge");
-            handleClose();
-          }}
-        >
-          <DeleteForeverRounded /> &nbsp; Purge Tasks
+        <StyledMenuItem onClick={() => { n("/purge"); handleClose(); }}>
+          <DeleteForeverRounded /> &nbsp; {t('menu.purgeTasks')}
         </StyledMenuItem>
 
-        {user.settings[0].enableCategories !== undefined && user.settings[0].enableCategories && (
-          <StyledMenuItem
-            onClick={() => {
-              n("/categories");
-              handleClose();
-            }}
-          >
-            <CategoryRounded /> &nbsp; Categories
+        {user.settings[0].enableCategories && (
+          <StyledMenuItem onClick={() => { n("/categories"); handleClose(); }}>
+            <CategoryRounded /> &nbsp; {t('menu.categories')}
           </StyledMenuItem>
         )}
 
-        <StyledMenuItem
-          onClick={() => {
-            n("/transfer");
-            handleClose();
-          }}
-        >
-          <GetAppRounded /> &nbsp; Transfer
+        <StyledMenuItem onClick={() => { n("/transfer"); handleClose(); }}>
+          <GetAppRounded /> &nbsp; {t('menu.transfer')}
         </StyledMenuItem>
 
         <StyledDivider />
-        <StyledMenuItem
-          translate="no"
-          onClick={() => {
-            window.open("https://github.com/maciekt07/TodoApp");
-          }}
-        >
-          <GitHub /> &nbsp; Github{" "}
+
+        <StyledMenuItem onClick={() => { window.open("https://github.com/maciekt07/TodoApp"); }}>
+          <GitHub /> &nbsp; {t('menu.github')}
           {stars && (
-            <Tooltip title={`${stars} stars on Github`}>
+            <Tooltip title={`${stars} ${t('menu.stars')}`}>
               <MenuLabel clr="#ff9d00">
                 <span style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <StarRounded style={{ fontSize: "18px" }} />
@@ -296,34 +266,24 @@ export const ProfileSidebar = () => {
           )}
         </StyledMenuItem>
 
-        <StyledMenuItem
-          onClick={() => {
-            window.open("https://github.com/maciekt07/TodoApp/issues/new");
-          }}
-        >
-          <BugReportRounded /> &nbsp; Report Issue{" "}
+        <StyledMenuItem onClick={() => { window.open("https://github.com/maciekt07/TodoApp/issues/new"); }}>
+          <BugReportRounded /> &nbsp; {t('menu.reportIssue')}
           {Boolean(issuesCount || issuesCount === 0) && (
-            <Tooltip title={`${issuesCount} open issues`}>
-              <MenuLabel clr={issuesCount && issuesCount > 0 ? ColorPalette.red : "#3bb61c"}>
+            <Tooltip title={`${issuesCount} ${t('menu.openIssues')}`}>
+              <MenuLabel clr={issuesCount && issuesCount > 0 ? "#f44336" : "#4caf50"}>
                 <span style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <AdjustRounded style={{ fontSize: "18px" }} />
-                  &nbsp;
-                  {issuesCount}
+                  &nbsp;{issuesCount}
                 </span>
               </MenuLabel>
             </Tooltip>
           )}
         </StyledMenuItem>
 
-        <StyledMenuItem
-          className="bmcMenu"
-          onClick={() => {
-            window.open("https://www.buymeacoffee.com/maciekt07");
-          }}
-        >
-          <BmcIcon className="bmc-icon" src={bmcLogo} /> &nbsp; Buy me a coffee{" "}
+        <StyledMenuItem onClick={() => { window.open("https://www.buymeacoffee.com/maciekt07"); }}>
+          <BmcIcon className="bmc-icon" src={bmcLogo} /> &nbsp; {t('menu.buyCoffee')}{" "}
           {bmcSupporters && (
-            <Tooltip title={`${bmcSupporters} supporters on Buy me a coffee`}>
+            <Tooltip title={`${bmcSupporters} ${t('menu.supporters')}`}>
               <MenuLabel clr="#f93c58">
                 <span style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                   <FavoriteRounded style={{ fontSize: "16px" }} />
@@ -343,12 +303,12 @@ export const ProfileSidebar = () => {
             ) : (
               <InstallDesktopRounded />
             )}
-            &nbsp; Install App
+            &nbsp; {t('menu.installApp')}
           </StyledMenuItem>
         )}
 
         <StyledMenuItem onClick={handleLogoutConfirmationOpen} sx={{ color: "#ff4040 !important" }}>
-          <Logout /> &nbsp; Logout
+          <Logout /> &nbsp; {t('menu.logout')}
         </StyledMenuItem>
 
         <ProfileOptionsBottom
@@ -363,7 +323,7 @@ export const ProfileSidebar = () => {
               handleClose();
             }}
           >
-            <SettingsRounded /> &nbsp; Settings
+            <SettingsRounded /> &nbsp; {t('menu.settings')}
             {user.settings[0] === defaultUser.settings[0] && <PulseMenuLabel />}
           </SettingsMenuItem>
           <StyledDivider />
@@ -386,18 +346,15 @@ export const ProfileSidebar = () => {
             >
               {user.name ? user.name[0].toUpperCase() : undefined}
             </Avatar>
-            <h4 style={{ margin: 0, fontWeight: 600 }}> {user.name || "User"}</h4>{" "}
-            {(user.name === null || user.name === "") &&
-              user.profilePicture === null &&
-              user.theme! == defaultUser.theme && <PulseMenuLabel />}
+            <h4 style={{ margin: 0, fontWeight: 600 }}> {user.name || t('menu.userProfile')}</h4>
           </StyledMenuItem>
           <StyledDivider />
           <CreditsContainer translate="no">
             <span style={{ display: "flex", alignItems: "center" }}>
-              Made with &nbsp;
+              {t('credits.madeWithLove')} &nbsp;
               <Favorite sx={{ fontSize: "14px" }} />
             </span>
-            <span style={{ marginLeft: "6px", marginRight: "4px" }}>by</span>
+            <span style={{ marginLeft: "6px", marginRight: "4px" }}>{t('credits.by')}</span>
             <a
               style={{ textDecoration: "none", color: "inherit" }}
               href="https://github.com/maciekt07"
@@ -407,10 +364,10 @@ export const ProfileSidebar = () => {
           </CreditsContainer>
           <CreditsContainer>
             {lastUpdate && (
-              <Tooltip title={timeAgo(new Date(lastUpdate))}>
+              <Tooltip title={t('menu.lastUpdate', { time: timeAgo(new Date(lastUpdate) , user.settings[0].languages) })}>
                 <span>
-                  Last update:{" "}
-                  {new Intl.DateTimeFormat(navigator.language, {
+                  {t('menu.lastUpdate')}:{" "}
+                  {new Intl.DateTimeFormat(user.settings[0].languages || navigator.language, {
                     dateStyle: "long",
                     timeStyle: "medium",
                   }).format(new Date(lastUpdate))}
@@ -420,16 +377,15 @@ export const ProfileSidebar = () => {
           </CreditsContainer>
         </ProfileOptionsBottom>
       </StyledSwipeableDrawer>
-
       <Dialog open={logoutConfirmationOpen} onClose={handleLogoutConfirmationClose}>
-        <DialogTitle>Logout Confirmation</DialogTitle>
+        <DialogTitle>{t('menu.logoutConfirmation')}</DialogTitle>
         <DialogContent>
-          Are you sure you want to logout? <b>Your tasks will not be saved.</b>
+          {t('menu.logoutConfirmation')} <b>{t('task.noTasks')}</b>
         </DialogContent>
         <DialogActions>
-          <DialogBtn onClick={handleLogoutConfirmationClose}>Cancel</DialogBtn>
+          <DialogBtn onClick={handleLogoutConfirmationClose}>{t('menu.cancel')}</DialogBtn>
           <DialogBtn onClick={handleLogout} color="error">
-            <Logout /> &nbsp; Logout
+            <Logout /> &nbsp; {t('menu.logout')}
           </DialogBtn>
         </DialogActions>
       </Dialog>
